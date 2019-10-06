@@ -83,8 +83,8 @@ namespace ContactsApp
                 if (value.Contains("-"))
                 {
                     var index = value.IndexOf('-') + 1;
-                    var subString = value.Substring(index, index + 1).ToUpper();
-                    subString = subString + value.Remove(0, index);
+                    var subString = value.Substring(index, 1).ToUpper();
+                    subString = subString + value.Remove(0, index + 1 );
                     value = value.Remove(index) + subString;
                 }
 

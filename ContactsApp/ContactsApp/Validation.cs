@@ -161,7 +161,7 @@ namespace ContactsApp
             CheckNullOrWhiteSpace(surname, "Surname");
             CheckLengthString(surname, "Surname", maxNumberSymbols);
             if (!surname.All(symbol =>
-                IsRussianLetter(symbol) && surname.Count(IsHyphen) <= 1))
+                IsRussianLetter(symbol) || IsHyphen(symbol)) && surname.Count(IsHyphen) <= 1)
             {
                 throw new ArgumentException(
                     "Contact's surname contains invalid symbols. The value of the entered string: " +
