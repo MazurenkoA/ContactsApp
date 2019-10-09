@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ContactsApp
 {
@@ -11,18 +7,16 @@ namespace ContactsApp
     /// </summary>
     public class Project
     {
+        #region Private fields
+
         /// <summary>
         /// List of all contacts.
         /// </summary>
         private List<Contact> _contacts;
 
-        /// <summary>
-        /// Constructor.
-        /// </summary>        
-        public Project()
-        {
-            Contacts = new List<Contact>();
-        }
+        #endregion
+
+        #region Properties
 
         /// <summary>
         /// List of all contacts.
@@ -32,6 +26,19 @@ namespace ContactsApp
             get => _contacts;
             set => _contacts = value;
         }
-        
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public Project()
+        {
+            Contacts = new List<Contact>();
+        }
+
+        #endregion
     }
 }

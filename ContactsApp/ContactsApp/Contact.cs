@@ -1,41 +1,43 @@
 ﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ContactsApp
 {
     /// <summary>
-    ///     Contact's personal data.
+    /// Contact's personal data.
     /// </summary>
     public class Contact : ICloneable
     {
         #region Private fields
 
         /// <summary>
-        ///     Contact's birthday.
+        /// Contact's birthday.
         /// </summary>
         private DateTime _birthday = DateTime.Now;
 
         /// <summary>
-        ///     Contact's email.
+        /// Contact's email.
         /// </summary>
         private string _email;
 
         /// <summary>
-        ///     Contact's ID in VK.
+        /// Contact's ID in VK.
         /// </summary>
         private string _id;
 
         /// <summary>
-        ///     Contact's name.
+        /// Contact's name.
         /// </summary>
         private string _name;
 
         /// <summary>
-        ///     Contact's phone number.
+        /// Contact's phone number.
         /// </summary>
         private PhoneNumber _phone = new PhoneNumber();
 
         /// <summary>
-        ///     Contact's surname.
+        /// Contact's surname.
         /// </summary>
         private string _surname;
 
@@ -44,19 +46,25 @@ namespace ContactsApp
         #region Properties
 
         /// <summary>
-        ///     Contact`s email.
+        /// Gets or sets contact's email.
         /// </summary>
         public string Email
         {
             get => _email;
             set
             {
-                value = Validation.GetCorrectString(value);
+                value = value.TrimAndLower();
+                uint maxNumberSymbols = 50;
+                var pattern =
+                    "^([0-9a-zA-Z]([-\\.\\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\\w]*[0-9a-zA-Z]\\.)+[a-zA-Z]{2,9})$";
 
-                if (!Validation.IsEmail(value))
+                Validator.AssertNullOrWhiteSpace(value, "Email");
+                Validator.AssertLengthString(value,"Email", maxNumberSymbols);
+                
+                if (!Regex.IsMatch(value, pattern, RegexOptions.IgnoreCase))
                 {
                     throw new ArgumentException(
-                        "Contact's Email entered is incorrect. The value of the entered string: " +
+                        "Contact's email entered is incorrect. The value of the entered string: " +
                         value);
                 }
 
@@ -65,26 +73,42 @@ namespace ContactsApp
         }
 
         /// <summary>
-        ///     Contact's surname.
+        /// Gets or sets contact's surname.
         /// </summary>
         public string Surname
         {
             get => _surname;
             set
             {
-                value = Validation.GetCorrectString(value);
-                if (!Validation.IsSurname(value))
+                uint maxNumberSymbols = 50;
+                value = value.TrimAndLower();
+
+                Validator.AssertNullOrWhiteSpace(value, "Surname");
+                Validator.AssertLengthString(value, "Surname", maxNumberSymbols);
+
+                if (!value.All(symbol =>
+                        Validator.IsRussianLetter(symbol) ||
+                        Validator.IsHyphen(symbol)) &&
+                    value.Count(Validator.IsHyphen) <= 1)
                 {
                     throw new ArgumentException(
-                        "Contact's surname entered is incorrect. The value of the entered string: " +
+                        "Contact's surname contains invalid symbols. The value of the entered string: " +
                         value);
                 }
+
+                if (Validator.IsHyphen(value.First()) || Validator.IsHyphen(value.Last()))
+                {
+                    throw new ArgumentException(
+                        "The beginning or end of the surname contains a hyphen. The value of the entered string: " +
+                        value);
+                }
+
 
                 if (value.Contains("-"))
                 {
                     var index = value.IndexOf('-') + 1;
                     var subString = value.Substring(index, 1).ToUpper();
-                    subString = subString + value.Remove(0, index + 1 );
+                    subString = subString + value.Remove(0, index + 1);
                     value = value.Remove(index) + subString;
                 }
 
@@ -94,19 +118,23 @@ namespace ContactsApp
         }
 
         /// <summary>
-        ///     Contact's name.
+        /// Gets or sets contact's name.
         /// </summary>
         public string Name
         {
             get => _name;
             set
             {
-                value = Validation.GetCorrectString(value);
+                uint maxNumberSymbols = 50;
+                value = value.TrimAndLower();
 
-                if (!Validation.IsName(value))
+                Validator.AssertNullOrWhiteSpace(value, "Name");
+                Validator.AssertLengthString(value, "Name", maxNumberSymbols);
+
+                if (!value.All(Validator.IsRussianLetter))
                 {
                     throw new ArgumentException(
-                        "Contact's name entered is incorrect. The value of the entered string: " +
+                        "Contact's name contains invalid symbols. The value of the entered string: " +
                         value);
                 }
 
@@ -116,7 +144,7 @@ namespace ContactsApp
         }
 
         /// <summary>
-        ///     Contact's birthday.
+        /// Gets or sets contact's birthday.
         /// </summary>
         public DateTime BirthDay
         {
@@ -138,16 +166,25 @@ namespace ContactsApp
         }
 
         /// <summary>
-        ///     Contact`s ID in VK.
+        /// Gets or sets contact's ID in VK.
         /// </summary>
         public string Id
         {
             get => _id;
             set
             {
-                value = Validation.GetCorrectString(value);
+                uint maxNumberSymbols = 15;
+                uint maxNumberUnderscore = maxNumberSymbols - 1;
+                value = value.TrimAndLower();
 
-                if (!Validation.IsId(value))
+                Validator.AssertNullOrWhiteSpace(value, "ID in VK");
+                Validator.AssertLengthString(value, "ID in VK", maxNumberSymbols);
+
+                if (!(value.All(symbol =>
+                          Validator.IsLatinLetter(symbol) ||
+                          Validator.IsDigital(symbol) ||
+                          Validator.IsUnderscore(symbol)) &&
+                      value.Count(Validator.IsUnderscore) <= maxNumberUnderscore))
                 {
                     throw new ArgumentException(
                         "The ID address entered is incorrect. The value of the entered string: " +
@@ -159,22 +196,46 @@ namespace ContactsApp
         }
 
         /// <summary>
-        ///     Contact`s phone number.
+        /// Gets or sets contact's phone number.
         /// </summary>
         public PhoneNumber Phone
         {
             get => _phone;
             set
             {
-                if (Validation.IsPhoneNumber(value.Number))
+                const long MinValueNumber = 79000000000;
+                const long MaxValueNumber = 79999999999;
+
+                if (value.Number < MinValueNumber || value.Number > MaxValueNumber)
                 {
-                    _phone = value;
+                    throw new ArgumentException(
+                        "Phone number must be between " + MinValueNumber + " and " +
+                        MaxValueNumber + ", but was entered " + value.Number);
                 }
 
-                throw new ArgumentException(
-                    "The phone number entered is incorrect. The value of the entered number: " +
-                    value.Number);
+                _phone = value;
             }
+        }
+
+        #endregion
+
+        #region Public methods
+
+        /// <summary>
+        /// Creating a contact clone.
+        /// </summary>
+        /// <returns>Returns a contact with cloned data.</returns>
+        public object Clone()
+        {
+            return new Contact
+            {
+                Name = Name,
+                Surname = Surname,
+                BirthDay = BirthDay,
+                Email = Email,
+                Id = Id,
+                Phone = (PhoneNumber) Phone.Clone()
+            };
         }
 
         #endregion
