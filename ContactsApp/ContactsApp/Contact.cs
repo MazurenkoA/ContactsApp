@@ -14,7 +14,7 @@ namespace ContactsApp
         /// <summary>
         /// Contact's birthday.
         /// </summary>
-        private DateTime _birthday = DateTime.Now;
+        private DateTime _birthday = DateTime.Today;
 
         /// <summary>
         /// Contact's email.

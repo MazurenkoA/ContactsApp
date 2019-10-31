@@ -30,15 +30,15 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
             this.InfoPanel = new System.Windows.Forms.Panel();
-            this.NameProjectLabel = new System.Windows.Forms.Label();
-            this.VersionLabel = new System.Windows.Forms.Label();
-            this.AuthorLabel = new System.Windows.Forms.Label();
-            this.GitHubLabel = new System.Windows.Forms.Label();
-            this.EmailLabel = new System.Windows.Forms.Label();
-            this.InfoLabel = new System.Windows.Forms.Label();
-            this.NameAuthorLabel = new System.Windows.Forms.Label();
-            this.EmailLinkLabel = new System.Windows.Forms.LinkLabel();
             this.GitHubLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.EmailLinkLabel = new System.Windows.Forms.LinkLabel();
+            this.NameAuthorLabel = new System.Windows.Forms.Label();
+            this.InfoLabel = new System.Windows.Forms.Label();
+            this.EmailLabel = new System.Windows.Forms.Label();
+            this.GitHubLabel = new System.Windows.Forms.Label();
+            this.AuthorLabel = new System.Windows.Forms.Label();
+            this.VersionLabel = new System.Windows.Forms.Label();
+            this.NameProjectLabel = new System.Windows.Forms.Label();
             this.InfoPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -56,52 +56,54 @@
             this.InfoPanel.Controls.Add(this.NameProjectLabel);
             this.InfoPanel.Name = "InfoPanel";
             // 
-            // NameProjectLabel
+            // GitHubLinkLabel
             // 
-            resources.ApplyResources(this.NameProjectLabel, "NameProjectLabel");
-            this.NameProjectLabel.Name = "NameProjectLabel";
-            // 
-            // VersionLabel
-            // 
-            resources.ApplyResources(this.VersionLabel, "VersionLabel");
-            this.VersionLabel.Name = "VersionLabel";
-            // 
-            // AuthorLabel
-            // 
-            resources.ApplyResources(this.AuthorLabel, "AuthorLabel");
-            this.AuthorLabel.Name = "AuthorLabel";
-            // 
-            // GitHubLabel
-            // 
-            resources.ApplyResources(this.GitHubLabel, "GitHubLabel");
-            this.GitHubLabel.Name = "GitHubLabel";
-            // 
-            // EmailLabel
-            // 
-            resources.ApplyResources(this.EmailLabel, "EmailLabel");
-            this.EmailLabel.Name = "EmailLabel";
-            // 
-            // InfoLabel
-            // 
-            resources.ApplyResources(this.InfoLabel, "InfoLabel");
-            this.InfoLabel.Name = "InfoLabel";
-            // 
-            // NameAuthorLabel
-            // 
-            resources.ApplyResources(this.NameAuthorLabel, "NameAuthorLabel");
-            this.NameAuthorLabel.Name = "NameAuthorLabel";
+            resources.ApplyResources(this.GitHubLinkLabel, "GitHubLinkLabel");
+            this.GitHubLinkLabel.Name = "GitHubLinkLabel";
+            this.GitHubLinkLabel.TabStop = true;
+            this.GitHubLinkLabel.Click += new System.EventHandler(this.GitHubLinkLabel_Click);
             // 
             // EmailLinkLabel
             // 
             resources.ApplyResources(this.EmailLinkLabel, "EmailLinkLabel");
             this.EmailLinkLabel.Name = "EmailLinkLabel";
             this.EmailLinkLabel.TabStop = true;
+            this.EmailLinkLabel.Click += new System.EventHandler(this.EmailLinkLabel_Click);
             // 
-            // GitHubLinkLabel
+            // NameAuthorLabel
             // 
-            resources.ApplyResources(this.GitHubLinkLabel, "GitHubLinkLabel");
-            this.GitHubLinkLabel.Name = "GitHubLinkLabel";
-            this.GitHubLinkLabel.TabStop = true;
+            resources.ApplyResources(this.NameAuthorLabel, "NameAuthorLabel");
+            this.NameAuthorLabel.Name = "NameAuthorLabel";
+            // 
+            // InfoLabel
+            // 
+            resources.ApplyResources(this.InfoLabel, "InfoLabel");
+            this.InfoLabel.Name = "InfoLabel";
+            // 
+            // EmailLabel
+            // 
+            resources.ApplyResources(this.EmailLabel, "EmailLabel");
+            this.EmailLabel.Name = "EmailLabel";
+            // 
+            // GitHubLabel
+            // 
+            resources.ApplyResources(this.GitHubLabel, "GitHubLabel");
+            this.GitHubLabel.Name = "GitHubLabel";
+            // 
+            // AuthorLabel
+            // 
+            resources.ApplyResources(this.AuthorLabel, "AuthorLabel");
+            this.AuthorLabel.Name = "AuthorLabel";
+            // 
+            // VersionLabel
+            // 
+            resources.ApplyResources(this.VersionLabel, "VersionLabel");
+            this.VersionLabel.Name = "VersionLabel";
+            // 
+            // NameProjectLabel
+            // 
+            resources.ApplyResources(this.NameProjectLabel, "NameProjectLabel");
+            this.NameProjectLabel.Name = "NameProjectLabel";
             // 
             // AboutForm
             // 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using ContactsApp;
 
 namespace ContactsAppUI
 {
@@ -8,15 +9,26 @@ namespace ContactsAppUI
     /// </summary>
     public partial class MainForm : Form
     {
+        #region Private fields
+
+        /// <summary>
+        /// Contact data.
+        /// </summary>
+        private Project _project;
+
+        #endregion
+
         #region Constructor
 
         /// <summary>
-        /// Constructor
+        /// Constructor.
         /// </summary>
         public MainForm()
         {
             InitializeComponent();
             InfoContact.ReadOnly = true;
+            _project = new Project();
+            ContactsListBox.Items.Clear();
         }
 
         #endregion
@@ -35,32 +47,219 @@ namespace ContactsAppUI
         }
 
         /// <summary>
-        /// Opening the window "Add/Edit contact".
+        /// Adding a new contact.
         /// </summary>
-        private void OpenSecondaryForm()
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void AddContact(object sender, EventArgs e)
         {
             var secondaryForm = new SecondaryForm();
-            secondaryForm.ShowDialog();
+            secondaryForm.Contact = new Contact();
+
+            var dialogResult = secondaryForm.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+                var newContact = secondaryForm.Contact;
+
+                _project.Contacts.Add(newContact);
+                ContactsListBox.Items.Add(newContact.Surname);
+            }
         }
 
         /// <summary>
-        /// Action when pressing the 'Add Contact' in the Menu.
+        /// Loading data from a file every time you start the application.
         /// </summary>
         /// <param name="sender">The object that triggered the event.</param>
         /// <param name="e">An argument that stores event information.</param>
-        private void AddContactMenuItem_Click(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            OpenSecondaryForm();
+            _project = ProjectManager.LoadFromFile();
+            UpdateContactsListBox(_project);
+            var count = ContactsListBox.Items.Count;
+            if (count >= 0)
+            {
+                InfoContact.CurrentContact = _project.Contacts[0];
+            }
         }
 
         /// <summary>
-        /// Action when pressing the 'AddContact' button.
+        /// Contact list update.
+        /// </summary>
+        /// <param name="project">Contact list.</param>
+        private void UpdateContactsListBox(Project project)
+        {
+            ContactsListBox.Items.Clear();
+            foreach (var contact in project.Contacts)
+            {
+                ContactsListBox.Items.Add(contact.Surname);
+            }
+
+            ProjectManager.SaveToFile(_project);
+        }
+
+        /// <summary>
+        /// The action that occurs before each closure of this form.
         /// </summary>
         /// <param name="sender">The object that triggered the event.</param>
         /// <param name="e">An argument that stores event information.</param>
-        private void AddContactButton_Click(object sender, EventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            OpenSecondaryForm();
+            ProjectManager.SaveToFile(_project);
+        }
+
+
+        /// <summary>
+        /// Display the selected contact.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void ContactsListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var index = ContactsListBox.SelectedIndex;
+            if (index >= 0)
+            {
+                InfoContact.CurrentContact = _project.Contacts[index];
+            }
+        }
+
+        /// <summary>
+        /// Validation the entered string for a match in the ContactsListBox.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void FindTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (FindTextBox.Text != "")
+            {
+                var founded = new Project();
+
+                foreach (var contact in _project.Contacts)
+                {
+                    if (contact.Surname.Contains(FindTextBox.Text))
+                    {
+                        founded.Contacts.Add(contact);
+                    }
+                }
+
+                UpdateContactsListBox(founded);
+            }
+            else
+            {
+                UpdateContactsListBox(_project);
+            }
+        }
+
+        /// <summary>
+        /// Validation the entered symbol.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void FindTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '-' || e.KeyChar == (char) Keys.Back ||
+                char.ToLower(e.KeyChar) >= 'а' && char.ToLower(e.KeyChar) <= 'я')
+            {
+                if (FindTextBox.Text.Length == 0 || FindTextBox.Text.EndsWith("-"))
+                {
+                    e.KeyChar = char.ToUpper(e.KeyChar);
+                }
+                else
+                {
+                    e.KeyChar = char.ToLower(e.KeyChar);
+                }
+            }
+            else
+            {
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Edit the selected contact.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void EditContact(object sender, EventArgs e)
+        {
+            var index = ContactsListBox.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            var secondaryForm = new SecondaryForm();
+            var current = _project.Contacts[index];
+            secondaryForm.Contact = current;
+            var dialogResult = secondaryForm.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+                var newContact = secondaryForm.Contact;
+                _project.Contacts.RemoveAt(index);
+                _project.Contacts.Insert(index, newContact);
+                UpdateContactsListBox(_project);
+            }
+        }
+
+        /// <summary>
+        /// Edit the selected contact.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void ContactsListBox_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            var index = ContactsListBox.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            var secondaryForm = new SecondaryForm();
+            var current = _project.Contacts[index];
+            secondaryForm.Contact = current;
+            var dialogResult = secondaryForm.ShowDialog();
+            if (dialogResult == DialogResult.OK)
+            {
+                var newContact = secondaryForm.Contact;
+                _project.Contacts.RemoveAt(index);
+                _project.Contacts.Insert(index, newContact);
+                UpdateContactsListBox(_project);
+            }
+        }
+
+        /// <summary>
+        /// Removing the selected contact.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void RemoveContact(object sender, EventArgs e)
+        {
+            var index = ContactsListBox.SelectedIndex;
+            if (index < 0)
+            {
+                return;
+            }
+
+            var result = MessageBox.Show(
+                @"Do you really want to remove this contact : " +
+                _project.Contacts[index].Surname + " ?", "Warning",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (result == DialogResult.Yes)
+            {
+                ContactsListBox.Items.RemoveAt(index);
+                _project.Contacts.RemoveAt(index);
+                ProjectManager.SaveToFile(_project);
+            }
+        }
+
+        /// <summary>
+        /// Closing the application.
+        /// </summary>
+        /// <param name="sender">The object that triggered the event.</param>
+        /// <param name="e">An argument that stores event information.</param>
+        private void ExitMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
         #endregion

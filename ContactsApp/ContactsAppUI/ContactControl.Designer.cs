@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ContactControl));
             this.SurnameLabel = new System.Windows.Forms.Label();
             this.NameLabel = new System.Windows.Forms.Label();
             this.BirthdayLabel = new System.Windows.Forms.Label();
@@ -40,6 +42,7 @@
             this.IdTextBox = new System.Windows.Forms.TextBox();
             this.BirthdayDateTime = new System.Windows.Forms.DateTimePicker();
             this.PhoneMaskedTextBox = new System.Windows.Forms.MaskedTextBox();
+            this.ToolTip = new System.Windows.Forms.ToolTip(this.components);
             this.SuspendLayout();
             // 
             // SurnameLabel
@@ -126,6 +129,8 @@
             this.SurnameTextBox.Name = "SurnameTextBox";
             this.SurnameTextBox.Size = new System.Drawing.Size(296, 20);
             this.SurnameTextBox.TabIndex = 1;
+            this.SurnameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SurnameTextBox_KeyPress);
+            this.SurnameTextBox.Leave += new System.EventHandler(this.TextBox_Leave);
             // 
             // NameTextBox
             // 
@@ -139,6 +144,8 @@
             this.NameTextBox.Name = "NameTextBox";
             this.NameTextBox.Size = new System.Drawing.Size(296, 20);
             this.NameTextBox.TabIndex = 2;
+            this.NameTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NameTextBox_KeyPress);
+            this.NameTextBox.Leave += new System.EventHandler(this.TextBox_Leave);
             // 
             // EmailTextBox
             // 
@@ -152,6 +159,9 @@
             this.EmailTextBox.Name = "EmailTextBox";
             this.EmailTextBox.Size = new System.Drawing.Size(296, 20);
             this.EmailTextBox.TabIndex = 5;
+            this.ToolTip.SetToolTip(this.EmailTextBox, resources.GetString("EmailTextBox.ToolTip"));
+            this.EmailTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.EmailTextBox_KeyPress);
+            this.EmailTextBox.Leave += new System.EventHandler(this.EmailTextBox_Leave);
             // 
             // IdTextBox
             // 
@@ -165,6 +175,8 @@
             this.IdTextBox.Name = "IdTextBox";
             this.IdTextBox.Size = new System.Drawing.Size(296, 20);
             this.IdTextBox.TabIndex = 6;
+            this.IdTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IdTextBox_KeyPress);
+            this.IdTextBox.Leave += new System.EventHandler(this.TextBox_Leave);
             // 
             // BirthdayDateTime
             // 
@@ -176,7 +188,7 @@
             this.BirthdayDateTime.Name = "BirthdayDateTime";
             this.BirthdayDateTime.Size = new System.Drawing.Size(96, 20);
             this.BirthdayDateTime.TabIndex = 3;
-            this.BirthdayDateTime.Value = new System.DateTime(2019, 10, 20, 0, 0, 0, 0);
+            this.BirthdayDateTime.Value = new System.DateTime(1900, 1, 1, 0, 0, 0, 0);
             // 
             // PhoneMaskedTextBox
             // 
@@ -189,6 +201,13 @@
             this.PhoneMaskedTextBox.Name = "PhoneMaskedTextBox";
             this.PhoneMaskedTextBox.Size = new System.Drawing.Size(296, 20);
             this.PhoneMaskedTextBox.TabIndex = 4;
+            this.PhoneMaskedTextBox.Leave += new System.EventHandler(this.PhoneMaskedTextBox_Leave);
+            // 
+            // ToolTip
+            // 
+            this.ToolTip.AutoPopDelay = 5000;
+            this.ToolTip.InitialDelay = 5;
+            this.ToolTip.ReshowDelay = 10;
             // 
             // ContactControl
             // 
@@ -228,5 +247,6 @@
         private System.Windows.Forms.Label NameLabel;
         private System.Windows.Forms.Label SurnameLabel;
         private System.Windows.Forms.MaskedTextBox PhoneMaskedTextBox;
+        private System.Windows.Forms.ToolTip ToolTip;
     }
 }

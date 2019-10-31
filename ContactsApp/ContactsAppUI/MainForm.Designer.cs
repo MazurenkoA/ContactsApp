@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
             this.FileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExitMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,6 +80,7 @@
             this.ExitMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
             this.ExitMenuItem.Size = new System.Drawing.Size(135, 22);
             this.ExitMenuItem.Text = "Exit";
+            this.ExitMenuItem.Click += new System.EventHandler(this.ExitMenuItem_Click);
             // 
             // EditMenuItem
             // 
@@ -93,21 +95,25 @@
             // AddContactMenuItem
             // 
             this.AddContactMenuItem.Name = "AddContactMenuItem";
-            this.AddContactMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.AddContactMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
+            this.AddContactMenuItem.Size = new System.Drawing.Size(203, 22);
             this.AddContactMenuItem.Text = "Add Contact";
-            this.AddContactMenuItem.Click += new System.EventHandler(this.AddContactMenuItem_Click);
+            this.AddContactMenuItem.Click += new System.EventHandler(this.AddContact);
             // 
             // EditContactMenuItem
             // 
             this.EditContactMenuItem.Name = "EditContactMenuItem";
-            this.EditContactMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.EditContactMenuItem.Size = new System.Drawing.Size(203, 22);
             this.EditContactMenuItem.Text = "Edit Contact";
+            this.EditContactMenuItem.Click += new System.EventHandler(this.EditContact);
             // 
             // RemoveContactMenuItem
             // 
             this.RemoveContactMenuItem.Name = "RemoveContactMenuItem";
-            this.RemoveContactMenuItem.Size = new System.Drawing.Size(162, 22);
+            this.RemoveContactMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.RemoveContactMenuItem.Size = new System.Drawing.Size(203, 22);
             this.RemoveContactMenuItem.Text = "Remove Contact";
+            this.RemoveContactMenuItem.Click += new System.EventHandler(this.RemoveContact);
             // 
             // HelpMenuItem
             // 
@@ -159,12 +165,13 @@
             this.EditContactButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.EditContactButton.FlatAppearance.BorderSize = 0;
             this.EditContactButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.EditContactButton.Image = global::ContactsAppUI.Properties.Resources.EditPage_16x;
+            this.EditContactButton.Image = ((System.Drawing.Image)(resources.GetObject("EditContactButton.Image")));
             this.EditContactButton.Location = new System.Drawing.Point(39, 338);
             this.EditContactButton.Name = "EditContactButton";
             this.EditContactButton.Size = new System.Drawing.Size(30, 30);
-            this.EditContactButton.TabIndex = 6;
+            this.EditContactButton.TabIndex = 4;
             this.EditContactButton.UseVisualStyleBackColor = true;
+            this.EditContactButton.Click += new System.EventHandler(this.EditContact);
             // 
             // RemoveContactButton
             // 
@@ -172,12 +179,13 @@
             this.RemoveContactButton.BackColor = System.Drawing.SystemColors.Control;
             this.RemoveContactButton.FlatAppearance.BorderSize = 0;
             this.RemoveContactButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.RemoveContactButton.Image = global::ContactsAppUI.Properties.Resources.Remove_16x;
+            this.RemoveContactButton.Image = ((System.Drawing.Image)(resources.GetObject("RemoveContactButton.Image")));
             this.RemoveContactButton.Location = new System.Drawing.Point(75, 338);
             this.RemoveContactButton.Name = "RemoveContactButton";
             this.RemoveContactButton.Size = new System.Drawing.Size(30, 30);
             this.RemoveContactButton.TabIndex = 5;
             this.RemoveContactButton.UseVisualStyleBackColor = false;
+            this.RemoveContactButton.Click += new System.EventHandler(this.RemoveContact);
             // 
             // AddContactButton
             // 
@@ -185,13 +193,13 @@
             this.AddContactButton.FlatAppearance.BorderColor = System.Drawing.SystemColors.Control;
             this.AddContactButton.FlatAppearance.BorderSize = 0;
             this.AddContactButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.AddContactButton.Image = global::ContactsAppUI.Properties.Resources.Add_16x;
+            this.AddContactButton.Image = ((System.Drawing.Image)(resources.GetObject("AddContactButton.Image")));
             this.AddContactButton.Location = new System.Drawing.Point(3, 338);
             this.AddContactButton.Name = "AddContactButton";
             this.AddContactButton.Size = new System.Drawing.Size(30, 30);
             this.AddContactButton.TabIndex = 3;
             this.AddContactButton.UseVisualStyleBackColor = true;
-            this.AddContactButton.Click += new System.EventHandler(this.AddContactButton_Click);
+            this.AddContactButton.Click += new System.EventHandler(this.AddContact);
             // 
             // ContactsListBox
             // 
@@ -204,6 +212,8 @@
             this.ContactsListBox.ScrollAlwaysVisible = true;
             this.ContactsListBox.Size = new System.Drawing.Size(220, 290);
             this.ContactsListBox.TabIndex = 2;
+            this.ContactsListBox.SelectedIndexChanged += new System.EventHandler(this.ContactsListBox_SelectedIndexChanged);
+            this.ContactsListBox.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ContactsListBox_MouseDoubleClick);
             // 
             // FindTextBox
             // 
@@ -214,6 +224,8 @@
             this.FindTextBox.Name = "FindTextBox";
             this.FindTextBox.Size = new System.Drawing.Size(178, 20);
             this.FindTextBox.TabIndex = 1;
+            this.FindTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.FindTextBox_KeyPress);
+            this.FindTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.FindTextBox_KeyUp);
             // 
             // FindLabel
             // 
@@ -241,12 +253,13 @@
             this.InfoContact.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.InfoContact.CurrentContact = null;
             this.InfoContact.Location = new System.Drawing.Point(3, 3);
             this.InfoContact.MaximumSize = new System.Drawing.Size(500, 154);
             this.InfoContact.MinimumSize = new System.Drawing.Size(360, 154);
             this.InfoContact.Name = "InfoContact";
             this.InfoContact.Size = new System.Drawing.Size(414, 154);
-            this.InfoContact.TabIndex = 0;
+            this.InfoContact.TabIndex = 6;
             // 
             // MainForm
             // 
@@ -255,6 +268,7 @@
             this.ClientSize = new System.Drawing.Size(664, 401);
             this.Controls.Add(this.TableLayoutPanel);
             this.Controls.Add(this.MenuStrip);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.MenuStrip;
             this.MaximizeBox = false;
             this.MaximumSize = new System.Drawing.Size(820, 600);
@@ -262,6 +276,8 @@
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Contacts App";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
             this.TableLayoutPanel.ResumeLayout(false);
