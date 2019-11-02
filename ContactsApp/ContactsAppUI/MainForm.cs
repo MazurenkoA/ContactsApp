@@ -63,6 +63,8 @@ namespace ContactsAppUI
 
                 _project.Contacts.Add(newContact);
                 ContactsListBox.Items.Add(newContact.Surname);
+                var index = _project.Contacts.Count - 1;
+                ContactsListBox.SetSelected(index, true);
             }
         }
 
@@ -75,10 +77,9 @@ namespace ContactsAppUI
         {
             _project = ProjectManager.LoadFromFile();
             UpdateContactsListBox(_project);
-            var count = ContactsListBox.Items.Count;
-            if (count >= 0)
+            if (_project.Contacts.Count >= 1)
             {
-                InfoContact.CurrentContact = _project.Contacts[0];
+                ContactsListBox.SetSelected(0, true);
             }
         }
 
@@ -197,6 +198,7 @@ namespace ContactsAppUI
                 _project.Contacts.RemoveAt(index);
                 _project.Contacts.Insert(index, newContact);
                 UpdateContactsListBox(_project);
+                ContactsListBox.SetSelected(index, true);
             }
         }
 
@@ -223,6 +225,7 @@ namespace ContactsAppUI
                 _project.Contacts.RemoveAt(index);
                 _project.Contacts.Insert(index, newContact);
                 UpdateContactsListBox(_project);
+                ContactsListBox.SetSelected(index, true);
             }
         }
 
@@ -249,6 +252,14 @@ namespace ContactsAppUI
                 ContactsListBox.Items.RemoveAt(index);
                 _project.Contacts.RemoveAt(index);
                 ProjectManager.SaveToFile(_project);
+                if (_project.Contacts.Count >= 1)
+                {
+                    ContactsListBox.SetSelected(0, true);
+                }
+                else
+                {
+                    InfoContact.CurrentContact = null;
+                }
             }
         }
 

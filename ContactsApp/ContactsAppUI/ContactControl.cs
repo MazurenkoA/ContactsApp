@@ -25,8 +25,8 @@ namespace ContactsAppUI
 
         /// <summary>
         /// Contact's phone number.
-        /// </summary>  
-        private long _number = 0;
+        /// </summary>
+        private long _number;
 
         #endregion
 
@@ -87,6 +87,16 @@ namespace ContactsAppUI
                     IsCorrectContact = true;
                     _currentContact = value;
                 }
+                else
+                {
+                    SurnameTextBox.Text = "";
+                    NameTextBox.Text = "";
+                    BirthdayDateTime.Value = DateTime.Today;
+                    PhoneMaskedTextBox.ResetText();
+                    EmailTextBox.Text = "";
+                    IdTextBox.Text = "";
+                    IsCorrectContact = false;
+                }
             }
         }
 
@@ -114,8 +124,9 @@ namespace ContactsAppUI
         {
             if (!string.IsNullOrWhiteSpace(SurnameTextBox.Text) &&
                 !string.IsNullOrWhiteSpace(NameTextBox.Text) &&
-                !string.IsNullOrWhiteSpace(PhoneMaskedTextBox.Text) &&
-                !string.IsNullOrWhiteSpace(IdTextBox.Text) && _number != 0)
+                !string.IsNullOrWhiteSpace(EmailTextBox.Text) &&
+                IsCorrectPhone(PhoneMaskedTextBox.Text) &&
+                !string.IsNullOrWhiteSpace(IdTextBox.Text))
             {
                 _currentContact.Surname = SurnameTextBox.Text;
                 _currentContact.Name = NameTextBox.Text;
@@ -187,23 +198,9 @@ namespace ContactsAppUI
         {
             if (!PhoneMaskedTextBox.ReadOnly)
             {
-                var phone = PhoneMaskedTextBox.Text.Replace("(", "").Replace(")", "")
-                    .Replace("-", "").Replace("+", "").Replace(" ", "");
-
-                if (phone.Length == 11)
+                if (IsCorrectPhone(PhoneMaskedTextBox.Text))
                 {
-                    var result = long.TryParse(phone, out var number);
-                    if (result)
-                    {
-                        PhoneMaskedTextBox.BackColor = Color.White;
-                        _number = number;
-                    }
-                    else
-                    {
-                        MessageBox.Show(
-                            @"Error entering phone number. The value entered is: " +
-                            PhoneMaskedTextBox.Text);
-                    }
+                    PhoneMaskedTextBox.BackColor = Color.White;
                 }
                 else
                 {
@@ -211,6 +208,26 @@ namespace ContactsAppUI
                     IsCorrectContact = false;
                 }
             }
+        }
+
+        /// <summary>
+        /// Validation if the entered values are a phone number.
+        /// </summary>
+        /// <param name="str">Entered string.</param>
+        /// <returns>Returns whether the string is a phone number.</returns>
+        private bool IsCorrectPhone(string str)
+        {
+            var pattern = @"\D+";
+            var patternPhone = @"79[0-9]{9}";
+            var regex = new Regex(pattern);
+            var result = regex.Replace(str, "");
+            if (Regex.IsMatch(result, patternPhone))
+            {
+                _number = long.Parse(result);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

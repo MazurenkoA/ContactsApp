@@ -201,6 +201,7 @@
             this.PhoneMaskedTextBox.Name = "PhoneMaskedTextBox";
             this.PhoneMaskedTextBox.Size = new System.Drawing.Size(296, 20);
             this.PhoneMaskedTextBox.TabIndex = 4;
+            this.ToolTip.SetToolTip(this.PhoneMaskedTextBox, "Phone format: +7 (900) 000 - 0000");
             this.PhoneMaskedTextBox.Leave += new System.EventHandler(this.PhoneMaskedTextBox_Leave);
             // 
             // ToolTip
